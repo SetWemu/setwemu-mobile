@@ -1,59 +1,66 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  StatusBar,
+  SafeAreaView 
+} from 'react-native';
 
 const LoginScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to SetWemu</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#0D1117" />
       
-      {/* Input Field */}
-      <TextInput 
-        style={styles.input} 
-        placeholder="Enter your email" 
-        placeholderTextColor="#999"
-      />
+      {/* 1. Logo Section */}
+      <View style={styles.logoContainer}>
+        {/* You can replace this Text with an <Image /> later if you have a logo file */}
+        <Text style={styles.logoTop}>SW</Text>
+        <Text style={styles.logoBottom}>SETWEMU</Text>
+      </View>
 
-      {/* Button */}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-    </View>
+      {/* Placeholder for the rest (we will add inputs next) */}
+      <View style={styles.tempPlaceholder}>
+        <Text style={{color: '#888'}}>Inputs go here...</Text>
+      </View>
+
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#0D1117', // Dark Navy/Black background
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 40,
-    textAlign: 'center',
-    color: '#333',
-  },
-  input: {
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  button: {
-    backgroundColor: '#007AFF', // Blue color
-    padding: 15,
-    borderRadius: 10,
+  logoContainer: {
+    marginTop: 60,
     alignItems: 'center',
+    marginBottom: 50,
   },
-  buttonText: {
+  logoTop: {
+    fontSize: 50,
+    fontWeight: '900',
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    letterSpacing: 2,
   },
+  logoBottom: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: 'white',
+    letterSpacing: 4,
+    marginTop: -5,
+  },
+  tempPlaceholder: {
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#333',
+    borderStyle: 'dashed',
+    borderRadius: 10,
+  }
 });
 
 export default LoginScreen;
