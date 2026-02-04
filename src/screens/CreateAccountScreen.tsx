@@ -13,8 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Logo from '../assets/images/logo.svg'; // <--- CHANGED: Importing SVG
 
-const CreateAccountScreen = () => {
-  // Form State
+const CreateAccountScreen = ({ navigation }: any) => {  // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -171,7 +170,7 @@ const CreateAccountScreen = () => {
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                <Text style={styles.linkText}>Login</Text>
             </TouchableOpacity>
           </View>

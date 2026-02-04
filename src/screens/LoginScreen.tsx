@@ -13,8 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const LoginScreen = () => {
-  const [username, setUsername] = useState('');
+const LoginScreen = ({ navigation }: any) => {  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -132,7 +131,7 @@ const LoginScreen = () => {
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don't have an account? </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
                <Text style={styles.linkText}>Signup</Text>
             </TouchableOpacity>
           </View>
@@ -284,6 +283,8 @@ const styles = StyleSheet.create({
     color: '#38bdf8',
     fontWeight: 'bold',
   },
+  
 });
+
 
 export default LoginScreen;
