@@ -10,7 +10,6 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const LoginScreen = () => {
@@ -20,12 +19,8 @@ const LoginScreen = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   return (
-    <LinearGradient
-      // Deep Navy to Black gradient to match your screenshot
-      colors={['#0f172a', '#020617', '#000000']} 
-      style={styles.container}
-    >
-      <StatusBar barStyle="light-content" />
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
       
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -36,16 +31,16 @@ const LoginScreen = () => {
           showsVerticalScrollIndicator={false}
         >
 
-          {/* Logo Section - Matching SET (White) WEMU (Cyan) */}
+          {/* Logo Section - Centered & Formatted */}
           <View style={styles.logoContainer}>
             <Text style={styles.logoTextMain}>SET</Text>
             <Text style={styles.logoTextAccent}>WEMU</Text>
           </View>
 
-          {/* Header */}
+          {/* Header - Left Aligned to match Signup Design */}
           <View style={styles.headerContainer}>
             <Text style={styles.headerTitle}>Login</Text>
-            <Text style={styles.headerSubtitle}>Welcome back, you've been missed!</Text>
+            <Text style={styles.headerSubtitle}>Please sign in to continue.</Text>
           </View>
 
           {/* Input Fields */}
@@ -53,10 +48,11 @@ const LoginScreen = () => {
             
             {/* Username */}
             <View style={styles.inputWrapper}>
+              <Text style={styles.inputLabel}>Username or Email</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Username or Email"
-                placeholderTextColor="#94a3b8" // Slate grey placeholder
+                placeholder=""
+                placeholderTextColor="#64748b"
                 value={username}
                 onChangeText={setUsername}
               />
@@ -64,27 +60,30 @@ const LoginScreen = () => {
 
             {/* Password */}
             <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                placeholderTextColor="#94a3b8"
-                secureTextEntry={!isPasswordVisible}
-                value={password}
-                onChangeText={setPassword}
-              />
-              <TouchableOpacity 
-                onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                style={styles.eyeIcon}
-              >
-                <Icon 
-                  name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} 
-                  size={20} 
-                  color="#94a3b8" 
+              <Text style={styles.inputLabel}>Password</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                    style={styles.passwordInput}
+                    placeholder=""
+                    placeholderTextColor="#64748b"
+                    secureTextEntry={!isPasswordVisible}
+                    value={password}
+                    onChangeText={setPassword}
                 />
-              </TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                    style={styles.eyeIcon}
+                >
+                    <Icon 
+                    name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} 
+                    size={20} 
+                    color="#94a3b8" 
+                    />
+                </TouchableOpacity>
+              </View>
             </View>
 
-            {/* Remember Me & Forgot Password Row */}
+            {/* Remember Me & Forgot Password */}
             <View style={styles.optionsRow}>
                 <TouchableOpacity 
                 style={styles.rememberContainer}
@@ -103,7 +102,7 @@ const LoginScreen = () => {
                 </TouchableOpacity>
             </View>
 
-            {/* Login Button - Solid Slate Style */}
+            {/* Login Button */}
             <TouchableOpacity style={styles.loginButton}>
                <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
@@ -112,11 +111,7 @@ const LoginScreen = () => {
 
           {/* Social Login Section */}
           <View style={styles.socialContainer}>
-            <View style={styles.dividerContainer}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.orText}>Or Login with</Text>
-                <View style={styles.dividerLine} />
-            </View>
+            <Text style={styles.orText}>Or Login with</Text>
             
             <View style={styles.socialIcons}>
                {/* Google */}
@@ -144,39 +139,42 @@ const LoginScreen = () => {
 
         </ScrollView>
       </KeyboardAvoidingView>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0F172A', // Lighter "Deep Navy" (matches Signup screen blue)
   },
   scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center', // This vertically centers the whole form
     padding: 24,
-    paddingTop: 80,
-    justifyContent: 'center',
-    minHeight: '100%',
   },
   logoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'center', // Centers the logo text horizontally
     marginBottom: 40,
   },
   logoTextMain: {
-    fontSize: 32,
-    fontWeight: '900',
+    fontSize: 40,
+    fontWeight: '900', // Extra Bold
     color: '#ffffff',
     letterSpacing: 2,
+    lineHeight: 40,
   },
   logoTextAccent: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#38bdf8', // Cyan color from your screenshot
+    fontSize: 40,
+    fontWeight: '900', // Extra Bold
+    color: '#38bdf8', // Cyan
     letterSpacing: 2,
+    lineHeight: 40,
+    marginTop: -5, // Tightens the stack
   },
   headerContainer: {
     marginBottom: 30,
+    width: '100%',
   },
   headerTitle: {
     fontSize: 32,
@@ -190,25 +188,44 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     marginBottom: 20,
+    width: '100%',
   },
   inputWrapper: {
-    marginBottom: 16,
-    position: 'relative',
-    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  inputLabel: {
+      color: '#fff',
+      fontSize: 14,
+      fontWeight: '600',
+      marginBottom: 8,
+      marginLeft: 4,
   },
   input: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#334155', // The slate border from your screenshot
+    borderColor: '#334155',
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
     color: '#fff',
-    paddingRight: 50, // Space for eye icon
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#334155',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    height: 56, // Fixed height to match single input
+  },
+  passwordInput: {
+      flex: 1,
+      fontSize: 16,
+      color: '#fff',
+      height: '100%',
   },
   eyeIcon: {
-    position: 'absolute',
-    right: 16,
+    marginLeft: 10,
   },
   optionsRow: {
       flexDirection: 'row',
@@ -231,15 +248,10 @@ const styles = StyleSheet.create({
       fontSize: 14,
   },
   loginButton: {
-    backgroundColor: '#334155', // Muted slate button color
+    backgroundColor: '#334155',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
   },
   loginButtonText: {
     color: '#fff',
@@ -247,23 +259,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   socialContainer: {
-      marginBottom: 30,
-  },
-  dividerContainer: {
-      flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 20,
-      marginTop: 10,
-  },
-  dividerLine: {
-      flex: 1,
-      height: 1,
-      backgroundColor: '#334155',
+      marginBottom: 30,
   },
   orText: {
       color: '#94a3b8',
-      marginHorizontal: 10,
-      fontSize: 12,
+      marginBottom: 20,
+      fontSize: 14,
   },
   socialIcons: {
       flexDirection: 'row',
@@ -278,12 +280,12 @@ const styles = StyleSheet.create({
       borderColor: '#334155',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#0f172a',
+      backgroundColor: '#1e293b',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 10,
+    marginBottom: 20,
   },
   footerText: {
     color: '#94a3b8',
