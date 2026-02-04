@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Logo from '../assets/images/logo.svg';
 import {
   View,
   Text,
@@ -31,13 +32,12 @@ const LoginScreen = () => {
           showsVerticalScrollIndicator={false}
         >
 
-          {/* Logo Section - Centered & Formatted */}
+          {/* Logo Section - IMAGE */}
           <View style={styles.logoContainer}>
-            <Text style={styles.logoTextMain}>SET</Text>
-            <Text style={styles.logoTextAccent}>WEMU</Text>
+            <Logo width={320} height={160} />
           </View>
 
-          {/* Header - Left Aligned to match Signup Design */}
+          {/* Header */}
           <View style={styles.headerContainer}>
             <Text style={styles.headerTitle}>Login</Text>
             <Text style={styles.headerSubtitle}>Please sign in to continue.</Text>
@@ -146,31 +146,21 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A', // Lighter "Deep Navy" (matches Signup screen blue)
+    backgroundColor: '#0F172A',
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center', // This vertically centers the whole form
+    justifyContent: 'center',
     padding: 24,
   },
   logoContainer: {
-    alignItems: 'center', // Centers the logo text horizontally
+    alignItems: 'center',
     marginBottom: 40,
   },
-  logoTextMain: {
-    fontSize: 40,
-    fontWeight: '900', // Extra Bold
-    color: '#ffffff',
-    letterSpacing: 2,
-    lineHeight: 40,
-  },
-  logoTextAccent: {
-    fontSize: 40,
-    fontWeight: '900', // Extra Bold
-    color: '#38bdf8', // Cyan
-    letterSpacing: 2,
-    lineHeight: 40,
-    marginTop: -5, // Tightens the stack
+  logoImage: {
+    width: 150, // Adjustable width
+    height: 80, // Adjustable height
+    marginBottom: 10,
   },
   headerContainer: {
     marginBottom: 30,
@@ -216,7 +206,7 @@ const styles = StyleSheet.create({
     borderColor: '#334155',
     borderRadius: 12,
     paddingHorizontal: 16,
-    height: 56, // Fixed height to match single input
+    height: 56,
   },
   passwordInput: {
       flex: 1,

@@ -1,11 +1,10 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import LoginScreen from './src/screens/LoginScreen'; // Import your new screen
-
+import CreateAccountScreen from './src/screens/CreateAccountScreen';
 function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <LoginScreen />
+      <CreateAccountScreen />
     </SafeAreaView>
   );
 }
