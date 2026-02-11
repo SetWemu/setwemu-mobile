@@ -102,9 +102,13 @@ const LoginScreen = ({ navigation }: any) => {  const [username, setUsername] = 
             </View>
 
             {/* Login Button */}
-            <TouchableOpacity style={styles.loginButton}>
-               <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
+            {/* Login Button */}
+          <TouchableOpacity 
+            style={styles.loginButton}
+            onPress={() => navigation.navigate('Profile')} // <--- ADD THIS LINE
+          >
+              <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
 
           </View>
 
