@@ -9,13 +9,15 @@ import {
   Image,
   Modal,
   Dimensions,
+  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const { width } = Dimensions.get('window');
 
 const ProfileScreen = ({ navigation }: any) => {
-  const [menuVisible, setMenuVisible] = useState(false);
+  // We use this state to know WHICH modal to show ('settings', 'hosted', 'attended', or null)
+  const [activeModal, setActiveModal] = useState<string | null>(null);
 
   // Placeholder User Data
   const user = {
@@ -30,10 +32,21 @@ const ProfileScreen = ({ navigation }: any) => {
     }
   };
 
-  // Placeholder Posts Data (Just colors for now)
-  const posts = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // Dummy Data for Lists
+  const hostedEvents = [
+    { id: '1', title: 'React Native Workshop', date: 'Oct 12, 2024' },
+    { id: '2', title: 'Startup Pitch Night', date: 'Nov 05, 2024' },
+    { id: '3', title: 'Coding Bootcamp', date: 'Dec 10, 2024' },
+  ];
 
-  // The Options Menu Items
+  const attendedEvents = [
+    { id: '1', title: 'AI Summit 2024', date: 'Sep 20, 2024' },
+    { id: '2', title: 'Design System Talk', date: 'Sep 25, 2024' },
+    { id: '3', title: 'Crypto Meetup', date: 'Oct 02, 2024' },
+    { id: '4', title: 'Product Launch', date: 'Oct 15, 2024' },
+  ];
+
+  // Menu Options
   const menuItems = [
     { icon: "ticket-outline", label: "My Tickets", action: () => console.log("Tickets") },
     { icon: "heart-outline", label: "Favorite Events", action: () => console.log("Favorites") },
@@ -41,11 +54,14 @@ const ProfileScreen = ({ navigation }: any) => {
     { icon: "help-circle-outline", label: "Help & Support", action: () => console.log("Help") },
   ];
 
+  // Helper to close modal
+  const closeModal = () => setActiveModal(null);
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
       
-      {/* 1. Header with Settings Button */}
+      {/* 1. Header */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
             <View style={styles.avatarContainer}>
@@ -61,7 +77,7 @@ const ProfileScreen = ({ navigation }: any) => {
         {/* Settings Icon (Top Right) */}
         <TouchableOpacity 
             style={styles.settingsIcon} 
-            onPress={() => setMenuVisible(true)}
+            onPress={() => setActiveModal('settings')}
         >
             <Icon name="menu-outline" size={28} color="#fff" />
         </TouchableOpacity>
@@ -69,21 +85,29 @@ const ProfileScreen = ({ navigation }: any) => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         
-        {/* 2. Stats Grid (Unchanged) */}
+        {/* 2. Stats Grid */}
         <View style={styles.statsContainer}>
-          <StatItem label="Hosted" value={user.stats.hosted} />
-          <StatItem label="Attended" value={user.stats.attended} />
-          <StatItem label="Favorites" value={user.stats.favorites} />
-          <StatItem label="Following" value={user.stats.following} />
+          {/* Clickable Stats */}
+          <StatItem 
+            label="Hosted" 
+            value={user.stats.hosted} 
+            onPress={() => setActiveModal('hosted')} 
+          />
+          <StatItem 
+            label="Attended" 
+            value={user.stats.attended} 
+            onPress={() => setActiveModal('attended')} 
+          />
+          <StatItem label="Favorites" value={user.stats.favorites} onPress={() => {}} />
+          <StatItem label="Following" value={user.stats.following} onPress={() => {}} />
         </View>
 
-        {/* 3. NEW: Posts Grid Section */}
+        {/* 3. Posts Grid Section */}
         <View style={styles.postsSection}>
             <Text style={styles.sectionTitle}>My Posts</Text>
             <View style={styles.postsGrid}>
-                {posts.map((item, index) => (
+                {[1, 2, 3, 4, 5, 6].map((item, index) => (
                     <View key={index} style={styles.postItem}>
-                        {/* Placeholder for an image */}
                         <Icon name="image-outline" size={30} color="#334155" />
                     </View>
                 ))}
@@ -93,54 +117,75 @@ const ProfileScreen = ({ navigation }: any) => {
         <View style={{height: 40}} /> 
       </ScrollView>
 
-
-      {/* 4. THE POP-UP MENU MODAL */}
+      {/* 4. DYNAMIC MODAL (Handles Settings, Hosted, and Attended) */}
       <Modal
         animationType="slide"
         transparent={true}
-        visible={menuVisible}
-        onRequestClose={() => setMenuVisible(false)}
+        visible={activeModal !== null}
+        onRequestClose={closeModal}
       >
         <TouchableOpacity 
             style={styles.modalOverlay} 
             activeOpacity={1} 
-            onPress={() => setMenuVisible(false)}
+            onPress={closeModal}
         >
             <View style={styles.modalContent}>
+                
+                {/* Modal Header */}
                 <View style={styles.modalHeader}>
-                    <Text style={styles.modalTitle}>Menu</Text>
-                    <TouchableOpacity onPress={() => setMenuVisible(false)}>
+                    <Text style={styles.modalTitle}>
+                        {activeModal === 'settings' ? 'Menu' : 
+                         activeModal === 'hosted' ? 'Events Hosted' : 
+                         activeModal === 'attended' ? 'Events Attended' : ''}
+                    </Text>
+                    <TouchableOpacity onPress={closeModal}>
                         <Icon name="close" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
                 
-                {/* Menu Options */}
-                {menuItems.map((item, index) => (
-                    <TouchableOpacity 
-                    key={index} 
-                    style={styles.menuItem}
-                    onPress={() => {
-                        item.action();
-                        setMenuVisible(false);
-                    }}
-                    >
-                    <Icon name={item.icon} size={22} color="#94a3b8" style={styles.menuIcon} />
-                    <Text style={styles.menuText}>{item.label}</Text>
-                    <Icon name="chevron-forward" size={18} color="#334155" />
-                    </TouchableOpacity>
-                ))}
+                {/* CONTENT: If Settings */}
+                {activeModal === 'settings' && (
+                    <View>
+                        {menuItems.map((item, index) => (
+                            <TouchableOpacity 
+                                key={index} 
+                                style={styles.menuItem}
+                                onPress={() => { item.action(); closeModal(); }}
+                            >
+                                <Icon name={item.icon} size={22} color="#94a3b8" style={styles.menuIcon} />
+                                <Text style={styles.menuText}>{item.label}</Text>
+                                <Icon name="chevron-forward" size={18} color="#334155" />
+                            </TouchableOpacity>
+                        ))}
+                        <TouchableOpacity 
+                            style={styles.signOutButton}
+                            onPress={() => { closeModal(); navigation.navigate('Login'); }}
+                        >
+                            <Icon name="log-out-outline" size={20} color="#ef4444" style={{marginRight: 10}} />
+                            <Text style={styles.signOutText}>Sign Out</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
 
-                {/* Sign Out (Distinct Style) */}
-                <TouchableOpacity 
-                    style={styles.signOutButton}
-                    onPress={() => {
-                        setMenuVisible(false);
-                        navigation.navigate('Login');
-                    }}
-                >
-                    <Icon name="log-out-outline" size={20} color="#ef4444" style={{marginRight: 10}} />
-                    <Text style={styles.signOutText}>Sign Out</Text>
-                </TouchableOpacity>
+                {/* CONTENT: If Hosted or Attended (List of Events) */}
+                {(activeModal === 'hosted' || activeModal === 'attended') && (
+                    <View>
+                        {(activeModal === 'hosted' ? hostedEvents : attendedEvents).map((event, index) => (
+                            <View key={index} style={styles.eventItem}>
+                                <View style={styles.eventIconBox}>
+                                    <Icon name="calendar-outline" size={20} color="#38bdf8" />
+                                </View>
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.eventTitle}>{event.title}</Text>
+                                    <Text style={styles.eventDate}>{event.date}</Text>
+                                </View>
+                                <Icon name="chevron-forward" size={16} color="#334155" />
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                <View style={{height: 20}} />
             </View>
         </TouchableOpacity>
       </Modal>
@@ -150,8 +195,8 @@ const ProfileScreen = ({ navigation }: any) => {
 };
 
 // Helper Component for Stats
-const StatItem = ({ label, value }: { label: string, value: number }) => (
-  <TouchableOpacity style={styles.statItem}>
+const StatItem = ({ label, value, onPress }: { label: string, value: number, onPress: () => void }) => (
+  <TouchableOpacity style={styles.statItem} onPress={onPress}>
     <Text style={styles.statValue}>{value}</Text>
     <Text style={styles.statLabel}>{label}</Text>
   </TouchableOpacity>
@@ -217,6 +262,7 @@ const styles = StyleSheet.create({
   },
   statItem: {
     alignItems: 'center',
+    padding: 5, // Increased touch area
   },
   statValue: {
     color: '#38bdf8',
@@ -228,7 +274,6 @@ const styles = StyleSheet.create({
     color: '#94a3b8',
     fontSize: 11,
   },
-  // Posts Grid Styles
   postsSection: {
     paddingHorizontal: 20,
   },
@@ -244,7 +289,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   postItem: {
-    width: (width - 50) / 3, // 3 items per row
+    width: (width - 50) / 3,
     height: (width - 50) / 3,
     backgroundColor: '#1e293b',
     borderRadius: 8,
@@ -252,7 +297,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Modal Styles
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -307,6 +351,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  // New Styles for Event List in Modal
+  eventItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#334155',
+  },
+  eventIconBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 15,
+  },
+  eventTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  eventDate: {
+    color: '#94a3b8',
+    fontSize: 12,
+    marginTop: 2,
+  }
 });
 
 export default ProfileScreen;
