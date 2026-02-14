@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  FlatList, 
+  TextInput, 
+  TouchableOpacity, 
+  Platform, 
+  StatusBar 
+} from 'react-native';
 
 const mockChats = [
   { id: '1', name: 'Sarah Wilson', message: 'Hey! Are you going to the tech meetup?', time: '10:30 AM', unread: 2, type: 'friend' },
@@ -8,14 +17,19 @@ const mockChats = [
   { id: '4', name: 'Design Team', message: 'See you at the workshop tomorrow.', time: 'Tue', unread: 5, type: 'host' },
 ];
 
-// 1. Added { navigation } to the props here so we can use it to change screens
 const ChatListScreen = ({ navigation }: any) => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredChats = mockChats.filter(chat => {
-    if (activeFilter === 'Friends') return chat.type === 'friend';
-    if (activeFilter === 'Hosts') return chat.type === 'host';
-    return true; 
+    const matchesTab = 
+      activeFilter === 'Friends' ? chat.type === 'friend' :
+      activeFilter === 'Hosts' ? chat.type === 'host' : 
+      true;
+
+    const matchesSearch = chat.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesTab && matchesSearch;
   });
 
   const toggleFilter = (filterName: string) => {
@@ -27,7 +41,6 @@ const ChatListScreen = ({ navigation }: any) => {
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    // 2. Added onPress here to navigate to the new screen and pass the person's name!
     <TouchableOpacity 
       style={styles.chatItem}
       onPress={() => navigation.navigate('ChatConversation', { name: item.name })}
@@ -49,7 +62,7 @@ const ChatListScreen = ({ navigation }: any) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.headerTitle}>Messages</Text>
       
       <View style={styles.searchContainer}>
@@ -57,6 +70,8 @@ const ChatListScreen = ({ navigation }: any) => {
           style={styles.searchInput} 
           placeholder="Search conversations..." 
           placeholderTextColor="#888"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
 
@@ -82,13 +97,16 @@ const ChatListScreen = ({ navigation }: any) => {
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... (Styles remain exactly the same as before, pasting them here for completeness)
-  container: { flex: 1, backgroundColor: '#0B1221' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#0B1221',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, 
+  },
   headerTitle: { color: 'white', fontSize: 28, fontWeight: 'bold', paddingHorizontal: 20, marginTop: 20, marginBottom: 15 },
   searchContainer: { paddingHorizontal: 20, marginBottom: 15 },
   searchInput: { backgroundColor: '#1E2536', color: 'white', borderRadius: 10, padding: 12, fontSize: 16 },

@@ -3,15 +3,14 @@ import {
   View, 
   Text, 
   StyleSheet, 
-  SafeAreaView, 
   FlatList, 
   TextInput, 
   TouchableOpacity, 
   KeyboardAvoidingView, 
-  Platform 
+  Platform,
+  StatusBar
 } from 'react-native';
 
-// Dummy conversation data
 const initialMessages = [
   { id: '1', text: 'Hey! Are you going to the tech meetup?', sender: 'them', time: '10:30 AM' },
   { id: '2', text: 'Yes! I just got my ticket.', sender: 'me', time: '10:32 AM' },
@@ -19,13 +18,11 @@ const initialMessages = [
 ];
 
 const ChatConversationScreen = ({ navigation, route }: any) => {
-  // If we pass a name from the list screen, use it. Otherwise, default to a name.
   const chatName = route?.params?.name || 'Sarah Wilson';
   
   const [messages, setMessages] = useState(initialMessages);
   const [inputText, setInputText] = useState('');
 
-  // Function to handle sending a new message
   const sendMessage = () => {
     if (inputText.trim().length > 0) {
       const newMessage = {
@@ -34,13 +31,11 @@ const ChatConversationScreen = ({ navigation, route }: any) => {
         sender: 'me',
         time: 'Now', 
       };
-      // Add the new message to the end of the list
       setMessages([...messages, newMessage]);
-      setInputText(''); // Clear the input box
+      setInputText(''); 
     }
   };
 
-  // Determines how each message bubble looks based on who sent it
   const renderMessage = ({ item }: { item: any }) => {
     const isMe = item.sender === 'me';
     return (
@@ -54,21 +49,19 @@ const ChatConversationScreen = ({ navigation, route }: any) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView 
         style={styles.keyboardView} 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        {/* Custom Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Text style={styles.backText}>{"< Back"}</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{chatName}</Text>
-          <View style={styles.headerRight} /> {/* Empty view to keep the title centered */}
+          <View style={styles.headerRight} /> 
         </View>
 
-        {/* The Chat History */}
         <FlatList
           data={messages}
           keyExtractor={(item) => item.id}
@@ -76,7 +69,6 @@ const ChatConversationScreen = ({ navigation, route }: any) => {
           contentContainerStyle={styles.chatList}
         />
 
-        {/* The Text Input Area */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.textInput}
@@ -90,14 +82,15 @@ const ChatConversationScreen = ({ navigation, route }: any) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B1221', // Dark blue background
+    backgroundColor: '#0B1221', 
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, 
   },
   keyboardView: {
     flex: 1,
@@ -126,21 +119,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   headerRight: {
-    width: 50, // Balances the back button width to keep title strictly centered
+    width: 50, 
   },
   chatList: {
     padding: 20,
-    gap: 15, // Space between messages
+    gap: 15, 
   },
   messageRow: {
     width: '100%',
     marginBottom: 5,
   },
   messageRowMe: {
-    alignItems: 'flex-end', // Pushes "my" messages to the right
+    alignItems: 'flex-end', 
   },
   messageRowThem: {
-    alignItems: 'flex-start', // Keeps "their" messages on the left
+    alignItems: 'flex-start', 
   },
   bubble: {
     maxWidth: '75%',
@@ -149,11 +142,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   bubbleMe: {
-    backgroundColor: '#2D8CFF', // Blue bubble for user
-    borderBottomRightRadius: 4, // Makes the tail of the bubble look right
+    backgroundColor: '#2D8CFF', 
+    borderBottomRightRadius: 4, 
   },
   bubbleThem: {
-    backgroundColor: '#1E2536', // Dark grey bubble for others
+    backgroundColor: '#1E2536', 
     borderBottomLeftRadius: 4,
   },
   messageText: {
@@ -183,7 +176,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     fontSize: 15,
-    maxHeight: 100, // In case of multi-line messages
+    maxHeight: 100, 
   },
   sendButton: {
     marginLeft: 15,
