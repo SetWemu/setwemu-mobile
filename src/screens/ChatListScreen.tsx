@@ -1,208 +1,193 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  StatusBar,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 
-// Mock Data for your chats
-const chatData = [
-  {
-    id: '1',
-    name: 'Sarah Wilson',
-    message: 'Hey! Are you going to the tech meetup?',
-    time: '10:30 AM',
-    unread: 2,
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-  },
-  {
-    id: '2',
-    name: 'Event Organizers',
-    message: 'Your ticket has been confirmed! 🎉',
-    time: 'Yesterday',
-    unread: 0,
-    avatar: 'https://ui-avatars.com/api/?name=Event+Org&background=random',
-  },
-  {
-    id: '3',
-    name: 'David Chen',
-    message: 'Can you send me the location?',
-    time: 'Yesterday',
-    unread: 0,
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-  },
-  {
-    id: '4',
-    name: 'Design Team',
-    message: 'See you at the workshop tomorrow.',
-    time: 'Tue',
-    unread: 5,
-    avatar: 'https://ui-avatars.com/api/?name=Design+Team&background=purple&color=fff',
-  },
+// Dummy data updated with a 'type' property
+const mockChats = [
+  { id: '1', name: 'Sarah Wilson', message: 'Hey! Are you going to the tech meetup?', time: '10:30 AM', unread: 2, type: 'friend' },
+  { id: '2', name: 'Event Organizers', message: 'Your ticket has been confirmed! 🎉', time: 'Yesterday', unread: 0, type: 'host' },
+  { id: '3', name: 'David Chen', message: 'Can you send me the location?', time: 'Yesterday', unread: 0, type: 'friend' },
+  { id: '4', name: 'Design Team', message: 'See you at the workshop tomorrow.', time: 'Tue', unread: 5, type: 'host' },
 ];
 
-const ChatListScreen = ({ navigation }: any) => {
-  const [search, setSearch] = useState('');
+const ChatListScreen = () => {
+  // 1. State now starts as null (no filter active = show everything)
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <Text style={styles.headerTitle}>Messages</Text>
-      <View style={styles.searchContainer}>
-        <Icon name="search" size={20} color="#94a3b8" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search conversations..."
-          placeholderTextColor="#64748b"
-          value={search}
-          onChangeText={setSearch}
-        />
+  // 2. Filter logic: if null, show all. Otherwise, match the type.
+  const filteredChats = mockChats.filter(chat => {
+    if (activeFilter === 'Friends') return chat.type === 'friend';
+    if (activeFilter === 'Hosts') return chat.type === 'host';
+    return true; // Shows everything if activeFilter is null
+  });
+
+  // 3. Toggle logic: If clicking the currently active button, turn it off. Otherwise, turn it on.
+  const toggleFilter = (filterName: string) => {
+    if (activeFilter === filterName) {
+      setActiveFilter(null); // Uncheck it
+    } else {
+      setActiveFilter(filterName); // Check it
+    }
+  };
+
+  const renderItem = ({ item }: { item: any }) => (
+    <TouchableOpacity style={styles.chatItem}>
+      <View style={styles.avatar} />
+      <View style={styles.chatDetails}>
+        <Text style={styles.chatName}>{item.name}</Text>
+        <Text style={styles.chatMessage} numberOfLines={1}>{item.message}</Text>
       </View>
-    </View>
-  );
-
-  const renderItem = ({ item }: any) => (
-    <TouchableOpacity 
-      style={styles.chatItem} 
-      onPress={() => console.log('Open Chat', item.id)}
-      activeOpacity={0.7}
-    >
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
-      
-      <View style={styles.contentContainer}>
-        <View style={styles.topRow}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.time}>{item.time}</Text>
-        </View>
-        
-        <View style={styles.bottomRow}>
-          <Text style={styles.message} numberOfLines={1}>
-            {item.message}
-          </Text>
-          {item.unread > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{item.unread}</Text>
-            </View>
-          )}
-        </View>
+      <View style={styles.chatMeta}>
+        <Text style={styles.chatTime}>{item.time}</Text>
+        {item.unread > 0 && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{item.unread}</Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
-      {renderHeader()}
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.headerTitle}>Messages</Text>
       
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <TextInput 
+          style={styles.searchInput} 
+          placeholder="Search conversations..." 
+          placeholderTextColor="#888"
+        />
+      </View>
+
+      {/* The Toggle Buttons */}
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity 
+          style={[styles.toggleButton, activeFilter === 'Friends' && styles.activeToggle]}
+          onPress={() => toggleFilter('Friends')}
+        >
+          <Text style={[styles.toggleText, activeFilter === 'Friends' && styles.activeToggleText]}>Friends</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.toggleButton, activeFilter === 'Hosts' && styles.activeToggle]}
+          onPress={() => toggleFilter('Hosts')}
+        >
+          <Text style={[styles.toggleText, activeFilter === 'Hosts' && styles.activeToggleText]}>Hosts</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* The List */}
       <FlatList
-        data={chatData}
-        keyExtractor={(item) => item.id}
+        data={filteredChats}
+        keyExtractor={item => item.id}
         renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
-  },
-  header: {
-    padding: 20,
-    paddingTop: 40,
-    backgroundColor: '#0F172A',
-    borderBottomWidth: 1,
-    borderBottomColor: '#1e293b',
+    backgroundColor: '#0B1221', 
   },
   headerTitle: {
-    color: '#fff',
+    color: 'white',
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    marginBottom: 15,
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1e293b',
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    height: 50,
-  },
-  searchIcon: {
-    marginRight: 10,
+    paddingHorizontal: 20,
+    marginBottom: 15,
   },
   searchInput: {
-    flex: 1,
-    color: '#fff',
+    backgroundColor: '#1E2536',
+    color: 'white',
+    borderRadius: 10,
+    padding: 12,
     fontSize: 16,
   },
-  listContent: {
+  toggleContainer: {
+    flexDirection: 'row',
     paddingHorizontal: 20,
-    paddingTop: 10,
+    marginBottom: 15,
+    gap: 10, 
+  },
+  toggleButton: {
+    flex: 1, 
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    backgroundColor: '#1E2536', 
+  },
+  activeToggle: {
+    backgroundColor: '#2D8CFF', 
+  },
+  toggleText: {
+    color: '#888',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  activeToggleText: {
+    color: 'white',
+  },
+  listContainer: {
+    paddingHorizontal: 20,
   },
   chatItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#1e293b',
+    borderBottomColor: '#1E2536',
   },
   avatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
+    backgroundColor: '#4A5568',
     marginRight: 15,
-    backgroundColor: '#334155',
   },
-  contentContainer: {
+  chatDetails: {
     flex: 1,
     justifyContent: 'center',
   },
-  topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  name: {
-    color: '#fff',
+  chatName: {
+    color: 'white',
     fontSize: 16,
     fontWeight: '600',
+    marginBottom: 4,
   },
-  time: {
-    color: '#64748b',
-    fontSize: 12,
-  },
-  bottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  message: {
-    color: '#94a3b8',
+  chatMessage: {
+    color: '#888',
     fontSize: 14,
-    flex: 1,
-    marginRight: 10,
+  },
+  chatMeta: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  chatTime: {
+    color: '#888',
+    fontSize: 12,
+    marginBottom: 6,
   },
   badge: {
-    backgroundColor: '#38bdf8',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
+    backgroundColor: '#2D8CFF',
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 6,
   },
   badgeText: {
-    color: '#0F172A',
-    fontSize: 10,
+    color: 'white',
+    fontSize: 12,
     fontWeight: 'bold',
   },
 });
