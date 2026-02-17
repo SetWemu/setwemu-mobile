@@ -8,7 +8,8 @@ import {
   TouchableOpacity, 
   KeyboardAvoidingView, 
   Platform,
-  StatusBar
+  StatusBar,
+  Image
 } from 'react-native';
 
 const initialMessages = [
@@ -18,7 +19,8 @@ const initialMessages = [
 ];
 
 const ChatConversationScreen = ({ navigation, route }: any) => {
-  const chatName = route?.params?.name || 'Sarah Wilson';
+  // We extract exactly what ChatListScreen sends: { name, image }
+  const { name, image } = route.params || { name: 'User', image: 'https://i.pravatar.cc/150' };
   
   const [messages, setMessages] = useState(initialMessages);
   const [inputText, setInputText] = useState('');
@@ -54,12 +56,26 @@ const ChatConversationScreen = ({ navigation, route }: any) => {
         style={styles.keyboardView} 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
+        {/* HEADER SECTION */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Text style={styles.backText}>{"< Back"}</Text>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()} 
+            style={styles.backButton}
+          >
+            <Text style={styles.backText}>‹</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{chatName}</Text>
-          <View style={styles.headerRight} /> 
+          
+          <View style={styles.headerInfo}>
+            <Image source={{ uri: image }} style={styles.headerAvatar} />
+            <View>
+              <Text style={styles.headerTitle}>{name}</Text>
+              <Text style={styles.statusText}>Online</Text>
+            </View>
+          </View>
+          
+          <TouchableOpacity style={styles.menuButton}>
+            <Text style={styles.menuText}>⋮</Text>
+          </TouchableOpacity>
         </View>
 
         <FlatList
@@ -98,36 +114,52 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#1E2536',
+    backgroundColor: '#0B1221',
   },
   backButton: {
-    paddingVertical: 5,
     paddingRight: 15,
   },
   backText: {
     color: '#2D8CFF',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 40,
+    fontWeight: '300',
+  },
+  headerInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
   },
   headerTitle: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  headerRight: {
-    width: 50, 
+  statusText: {
+    color: '#4CD964',
+    fontSize: 12,
+  },
+  menuButton: {
+    padding: 5,
+  },
+  menuText: {
+    color: 'white',
+    fontSize: 24,
   },
   chatList: {
     padding: 20,
-    gap: 15, 
   },
   messageRow: {
-    width: '100%',
-    marginBottom: 5,
+    marginBottom: 15,
   },
   messageRowMe: {
     alignItems: 'flex-end', 
@@ -136,37 +168,31 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start', 
   },
   bubble: {
-    maxWidth: '75%',
+    maxWidth: '80%',
     padding: 12,
-    borderRadius: 16,
-    marginBottom: 4,
+    borderRadius: 15,
   },
   bubbleMe: {
-    backgroundColor: '#2D8CFF', 
-    borderBottomRightRadius: 4, 
+    backgroundColor: '#2D8CFF',
   },
   bubbleThem: {
-    backgroundColor: '#1E2536', 
-    borderBottomLeftRadius: 4,
+    backgroundColor: '#1E2536',
   },
   messageText: {
     color: 'white',
     fontSize: 15,
-    lineHeight: 20,
   },
   timeText: {
     color: '#888',
-    fontSize: 11,
-    marginHorizontal: 4,
+    fontSize: 10,
+    marginTop: 4,
   },
   inputContainer: {
     flexDirection: 'row',
     padding: 15,
-    paddingBottom: 20,
-    backgroundColor: '#0B1221',
     borderTopWidth: 1,
     borderTopColor: '#1E2536',
-    alignItems: 'center',
+    backgroundColor: '#0B1221',
   },
   textInput: {
     flex: 1,
@@ -174,16 +200,14 @@ const styles = StyleSheet.create({
     color: 'white',
     borderRadius: 20,
     paddingHorizontal: 15,
-    paddingVertical: 10,
-    fontSize: 15,
-    maxHeight: 100, 
+    paddingVertical: 8,
   },
   sendButton: {
-    marginLeft: 15,
+    marginLeft: 10,
+    justifyContent: 'center',
     backgroundColor: '#2D8CFF',
     borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   sendButtonText: {
     color: 'white',
