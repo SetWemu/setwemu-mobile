@@ -33,8 +33,9 @@ const ProfileScreen = ({ navigation }: any) => {
   // Placeholder Posts Data (Just colors for now)
   const posts = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  // The Options Menu Items
+  // The Options Menu Items (Added Edit Profile here!)
   const menuItems = [
+    { icon: "person-outline", label: "Edit Profile", action: () => navigation.navigate('EditProfileScreen') },
     { icon: "ticket-outline", label: "My Tickets", action: () => console.log("Tickets") },
     { icon: "heart-outline", label: "Favorite Events", action: () => console.log("Favorites") },
     { icon: "settings-outline", label: "Settings", action: () => console.log("Settings") },
@@ -50,7 +51,12 @@ const ProfileScreen = ({ navigation }: any) => {
         <View style={styles.headerContent}>
             <View style={styles.avatarContainer}>
             <Image source={{ uri: user.avatar }} style={styles.avatar} />
-            <TouchableOpacity style={styles.editBadge}>
+            
+            {/* Added navigation to the pencil icon! */}
+            <TouchableOpacity 
+                style={styles.editBadge}
+                onPress={() => navigation.navigate('EditProfileScreen')}
+            >
                 <Icon name="pencil" size={12} color="#fff" />
             </TouchableOpacity>
             </View>
