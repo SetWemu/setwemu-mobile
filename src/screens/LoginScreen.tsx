@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Logo from '../assets/images/logo.svg';
 import {
   View,
   Text,
@@ -33,7 +32,7 @@ const LoginScreen = ({ navigation }: any) => {  const [username, setUsername] = 
 
           {/* Logo Section - IMAGE */}
           <View style={styles.logoContainer}>
-            <Logo width={320} height={160} />
+          <Text style={{ color: 'white', fontSize: 24 }}>Logo Goes Here</Text>          
           </View>
 
           {/* Header */}
