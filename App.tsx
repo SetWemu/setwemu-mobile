@@ -1,15 +1,15 @@
-import 'react-native-gesture-handler'; 
+import 'react-native-gesture-handler';
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 
-const App = () => {
+export default function App() {
   return (
-    // Adding flex: 1 here forces the container to take up the whole screen
     <SafeAreaProvider style={{ flex: 1 }}>
-      <AppNavigator />
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
     </SafeAreaProvider>
   );
-};
-
-export default App;
+}
