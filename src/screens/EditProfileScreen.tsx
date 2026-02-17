@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CountryPicker, { CountryCode, Country } from 'react-native-country-picker-modal';
-// --- NEW: Import Image Picker ---
 import { launchImageLibrary } from 'react-native-image-picker';
 
 const EditProfileScreen = ({ navigation }: any) => {
@@ -31,30 +30,35 @@ const EditProfileScreen = ({ navigation }: any) => {
   const [countryName, setCountryName] = useState('Sri Lanka');
   const [city, setCity] = useState('Colombo');
 
-  const handleSave = () => {
-    const fullPhone = `+${callingCode} ${phone}`;
-    const fullLocation = `${city}, ${countryName}`;
-    console.log('Saved data:', { avatar, name, username, email, fullPhone, fullLocation, bio, website });
-    navigation.goBack();
-  };
+  // Inside handleSave function:
+    const handleSave = () => {
+  const fullPhone = `+${callingCode} ${phone}`;
+  const fullLocation = city ? `${city}, ${countryName}` : countryName;
+  
+  // FIXED: Changed navigation name to 'Profile' to match AppNavigator
+  navigation.navigate('Profile', {
+    updatedData: {
+      name,
+      handle: username,
+      email,
+      phone: fullPhone,
+      location: fullLocation,
+      bio,
+      website,
+      avatar
+    }
+  });
+};
 
-  // --- NEW: Open Gallery and Select Image ---
   const handleChangePhoto = async () => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
-      quality: 0.8, // Compresses the image slightly so it's not massive
+      quality: 0.8,
     });
 
-    if (result.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (result.errorCode) {
-      console.log('ImagePicker Error: ', result.errorMessage);
-    } else if (result.assets && result.assets.length > 0) {
-      // Grab the local URI of the selected image and update the state
+    if (result.assets && result.assets.length > 0) {
       const selectedImageUri = result.assets[0].uri;
-      if (selectedImageUri) {
-        setAvatar(selectedImageUri);
-      }
+      if (selectedImageUri) setAvatar(selectedImageUri);
     }
   };
 
@@ -67,10 +71,7 @@ const EditProfileScreen = ({ navigation }: any) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.cancelButton}>Cancel</Text>
@@ -82,8 +83,6 @@ const EditProfileScreen = ({ navigation }: any) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        
-        {/* Avatar Section */}
         <View style={styles.avatarSection}>
           <View style={styles.avatarContainer}>
             <Image source={{ uri: avatar }} style={styles.avatar} />
@@ -96,17 +95,17 @@ const EditProfileScreen = ({ navigation }: any) => {
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Name</Text>
-            <TextInput style={styles.input} value={name} onChangeText={setName} placeholderTextColor="#64748b" />
+            <TextInput style={styles.input} value={name} onChangeText={setName} />
           </View>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Username</Text>
-            <TextInput style={styles.input} value={username} onChangeText={setUsername} placeholderTextColor="#64748b" autoCapitalize="none" />
+            <TextInput style={styles.input} value={username} onChangeText={setUsername} autoCapitalize="none" />
           </View>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
-            <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholderTextColor="#64748b" keyboardType="email-address" autoCapitalize="none" />
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
           </View>
 
           <View style={styles.inputGroup}>
@@ -115,10 +114,7 @@ const EditProfileScreen = ({ navigation }: any) => {
               <View style={styles.countryPickerButton}>
                 <CountryPicker
                   countryCode={phoneCountryCode}
-                  withFilter
-                  withFlag
-                  withCallingCode
-                  withCallingCodeButton
+                  withFilter withFlag withCallingCode withCallingCodeButton
                   theme={countryPickerTheme}
                   onSelect={(country: Country) => {
                     setPhoneCountryCode(country.cca2);
@@ -126,7 +122,7 @@ const EditProfileScreen = ({ navigation }: any) => {
                   }}
                 />
               </View>
-              <TextInput style={[styles.input, { flex: 1, marginLeft: 10 }]} value={phone} onChangeText={setPhone} placeholderTextColor="#64748b" keyboardType="phone-pad" />
+              <TextInput style={[styles.input, { flex: 1, marginLeft: 10 }]} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
             </View>
           </View>
 
@@ -136,9 +132,7 @@ const EditProfileScreen = ({ navigation }: any) => {
               <View style={styles.countryPickerButton}>
                 <CountryPicker
                   countryCode={locationCountryCode}
-                  withFilter
-                  withFlag
-                  withCountryNameButton
+                  withFilter withFlag withCountryNameButton
                   theme={countryPickerTheme}
                   onSelect={(country: Country) => {
                     setLocationCountryCode(country.cca2);
@@ -152,14 +146,13 @@ const EditProfileScreen = ({ navigation }: any) => {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Bio</Text>
-            <TextInput style={[styles.input, styles.textArea]} value={bio} onChangeText={setBio} placeholderTextColor="#64748b" multiline numberOfLines={4} />
+            <TextInput style={[styles.input, styles.textArea]} value={bio} onChangeText={setBio} multiline numberOfLines={4} />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Website / Portfolio</Text>
-            <TextInput style={styles.input} value={website} onChangeText={setWebsite} placeholderTextColor="#64748b" keyboardType="url" autoCapitalize="none" />
+            <Text style={styles.label}>Website</Text>
+            <TextInput style={styles.input} value={website} onChangeText={setWebsite} keyboardType="url" autoCapitalize="none" />
           </View>
-
           <View style={{height: 40}} />
         </View>
       </ScrollView>
@@ -179,7 +172,7 @@ const styles = StyleSheet.create({
   cameraBadge: { position: 'absolute', bottom: 0, right: 0, backgroundColor: '#38bdf8', padding: 8, borderRadius: 20, borderWidth: 3, borderColor: '#0F172A' },
   formContainer: { padding: 20 },
   inputGroup: { marginBottom: 20 },
-  label: { color: '#94a3b8', marginBottom: 8, fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
+  label: { color: '#94a3b8', marginBottom: 8, fontSize: 13, fontWeight: '600', textTransform: 'uppercase' },
   input: { backgroundColor: '#1e293b', color: 'white', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontSize: 16, borderWidth: 1, borderColor: '#334155' },
   textArea: { height: 100, textAlignVertical: 'top' },
   rowInputContainer: { flexDirection: 'row', alignItems: 'center' },
