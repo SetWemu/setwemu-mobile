@@ -7,15 +7,17 @@ import ChatListScreen from '../screens/ChatListScreen';
 import ChatConversationScreen from '../screens/ChatConversationScreen';
 import OnboardingScreen from '../screens/OnBoardingScreen';
 import SplashScreen from '../screens/SplashScreen';
+import AttendeesListScreen from '../screens/AttendeesListScreen';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator 
-      initialRouteName="Splash" 
+      initialRouteName="AttendeesList" 
       screenOptions={{ headerShown: false }}
     >           
+      <Stack.Screen name="AttendeesList" component={AttendeesListScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Splash" component={SplashScreen}  />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ headerShown: false }}  />
       <Stack.Screen name="OrganizerProfile" component={OrganizerProfileScreen}  />
