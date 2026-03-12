@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E293B',
     marginHorizontal: 20,
     marginTop: 20,
-    paddingHorizontal: 15,
-    borderRadius: 12,
+    paddingHorizontal: 20, // Increased slightly for the curve
+    borderRadius: 30,      // This is the magic number for the pill shape!
     height: 50,
   },
   searchIcon: { marginRight: 10 },
