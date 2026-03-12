@@ -24,7 +24,7 @@ const AttendeesListScreen = ({ navigation }: any) => {
   );
 
   const renderItem = ({ item }: any) => (
-    <View style={styles.userCard}>
+    <View style={styles.userRow}>
       <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E293B',
     marginHorizontal: 20,
     marginTop: 20,
-    paddingHorizontal: 20, // Increased slightly for the curve
-    borderRadius: 30,      // This is the magic number for the pill shape!
+    paddingHorizontal: 20,
+    borderRadius: 30,      
     height: 50,
   },
   searchIcon: { marginRight: 10 },
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
   emptyText: { color: '#94a3b8', textAlign: 'center', marginTop: 40, fontSize: 16 },
 
   listContainer: { padding: 20 },
-  userCard: {
+  userRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 15,
+    paddingVertical: 16,          // Slightly more breathing room inside the row
+    marginBottom: 12,             // THIS adds the physical gap between each row!
+    borderBottomWidth: 1,         
+    borderBottomColor: '#1E293B', 
   },
   avatar: { width: 50, height: 50, borderRadius: 25, marginRight: 15 },
   userInfo: { flex: 1 },
