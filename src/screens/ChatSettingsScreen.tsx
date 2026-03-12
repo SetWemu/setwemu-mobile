@@ -60,6 +60,11 @@ const ChatSettingsScreen = ({ navigation }: any) => {
             color="#4CC1D4" 
           />
           <SettingItem 
+            icon="star-outline" 
+            title="Add to Favorites" 
+            color="#FBBF24" 
+          />
+          <SettingItem 
             icon="images-outline" 
             title="Media, Links, and Docs" 
             color="#A855F7" 
