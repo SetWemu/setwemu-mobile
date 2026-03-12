@@ -10,15 +10,17 @@ import SplashScreen from '../screens/SplashScreen';
 import AttendeesListScreen from '../screens/AttendeesListScreen';
 import NewMessageScreen from '../screens/NewMessageScreen';
 import ChatSettingsScreen from '../screens/ChatSettingsScreen';
+import StoriesScreen from '../screens/StoriesScreen';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator 
-      initialRouteName="ChatSettings" 
+      initialRouteName="Stories" 
       screenOptions={{ headerShown: false }}
     >           
+      <Stack.Screen name="Stories" component={StoriesScreen} />
       <Stack.Screen name="ChatSettings" component={ChatSettingsScreen} />
       <Stack.Screen name="NewMessage" component={NewMessageScreen} />
       <Stack.Screen name="AttendeesList" component={AttendeesListScreen} options={{ headerShown: false }} />
