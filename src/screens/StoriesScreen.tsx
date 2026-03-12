@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, StatusBar, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get('window');
@@ -18,14 +18,14 @@ const StoriesScreen = ({ navigation }: any) => {
       <Image source={{ uri: storyData.image }} style={styles.backgroundImage} />
       <View style={styles.overlay} />
 
-      {/* NEW: Progress Bar Segments */}
+      {/* Progress Bar Segments */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBarActive} />
         <View style={styles.progressBarInactive} />
         <View style={styles.progressBarInactive} />
       </View>
 
-      {/* NEW: Top Header (Avatar, Name, Close button) */}
+      {/* Top Header */}
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Image source={{ uri: storyData.avatar }} style={styles.avatar} />
@@ -36,6 +36,21 @@ const StoriesScreen = ({ navigation }: any) => {
         </View>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeBtn}>
           <Icon name="close" size={28} color="#fff" />
+        </TouchableOpacity>
+      </View>
+
+      {/* NEW: Bottom Interaction Bar */}
+      <View style={styles.footer}>
+        <TextInput 
+          style={styles.replyInput}
+          placeholder="Send a message..."
+          placeholderTextColor="rgba(255, 255, 255, 0.7)"
+        />
+        <TouchableOpacity style={styles.actionIcon}>
+          <Icon name="heart-outline" size={28} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionIcon}>
+          <Icon name="paper-plane-outline" size={26} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -54,11 +69,10 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.2)', 
   },
-  // Header & Progress Styles
   progressContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
-    paddingTop: 15, // Pushed slightly down from the very top
+    paddingTop: 15,
     width: '100%',
     position: 'absolute',
     top: 0,
@@ -90,17 +104,31 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   userInfo: { flexDirection: 'row', alignItems: 'center' },
-  avatar: { 
-    width: 36, 
-    height: 36, 
-    borderRadius: 18, 
-    marginRight: 10, 
-    borderWidth: 1.5, 
-    borderColor: '#4CC1D4' 
-  },
+  avatar: { width: 36, height: 36, borderRadius: 18, marginRight: 10, borderWidth: 1.5, borderColor: '#4CC1D4' },
   username: { color: '#fff', fontSize: 14, fontWeight: 'bold' },
   timeText: { color: 'rgba(255,255,255,0.8)', fontSize: 12 },
   closeBtn: { padding: 5 },
+
+  // NEW: Footer Styles
+  footer: {
+    position: 'absolute',
+    bottom: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    width: '100%',
+  },
+  replyInput: {
+    flex: 1,
+    height: 48,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    color: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Glassmorphism effect
+  },
+  actionIcon: { marginLeft: 15 },
 });
 
 export default StoriesScreen;
