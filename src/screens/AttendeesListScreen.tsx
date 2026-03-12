@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-// Dummy data so the list isn't empty!
-const attendees = [
+// Dummy data
+const initialAttendees = [
   { id: '1', name: 'Kasun Perera', role: 'Software Engineer', avatar: 'https://i.pravatar.cc/150?img=11' },
   { id: '2', name: 'Nethmi Fernando', role: 'UX Designer', avatar: 'https://i.pravatar.cc/150?img=5' },
   { id: '3', name: 'Ruwan Silva', role: 'Event Organizer', avatar: 'https://i.pravatar.cc/150?img=8' },
@@ -14,8 +14,15 @@ const attendees = [
 ];
 
 const AttendeesListScreen = ({ navigation }: any) => {
-  
-  // This function tells the FlatList how to draw ONE single row
+  // State to track what the user types in the search bar
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter the list based on the search query (checks both name and role)
+  const filteredAttendees = initialAttendees.filter(attendee => 
+    attendee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    attendee.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const renderItem = ({ item }: any) => (
     <View style={styles.userCard}>
       <Image source={{ uri: item.avatar }} style={styles.avatar} />
@@ -24,7 +31,6 @@ const AttendeesListScreen = ({ navigation }: any) => {
         <Text style={styles.userRole}>{item.role}</Text>
       </View>
       
-      {/* A quick way to message them directly from the list */}
       <TouchableOpacity style={styles.messageBtn}>
         <Icon name="chatbubble-ellipses-outline" size={20} color="#4CC1D4" />
       </TouchableOpacity>
@@ -38,17 +44,39 @@ const AttendeesListScreen = ({ navigation }: any) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Attendees ({attendees.length})</Text>
-        <View style={{ width: 24 }} /> {/* Invisible spacer to keep the title perfectly centered */}
+        <Text style={styles.headerTitle}>Attendees ({initialAttendees.length})</Text>
+        <View style={{ width: 24 }} /> 
       </View>
 
-      {/* The Scrollable List */}
+      {/* New Search Bar */}
+      <View style={styles.searchContainer}>
+        <Icon name="search-outline" size={20} color="#94a3b8" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search attendees..."
+          placeholderTextColor="#94a3b8"
+          value={searchQuery}
+          onChangeText={setSearchQuery} // Updates the state every time you type
+        />
+        {/* Little X button to clear the search if typing */}
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery('')}>
+            <Icon name="close-circle" size={20} color="#94a3b8" />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {/* The Scrollable List (Now uses filteredAttendees!) */}
       <FlatList
-        data={attendees}
+        data={filteredAttendees}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        // Shows this text if no one matches the search
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No attendees found.</Text>
+        }
       />
     </View>
   );
@@ -67,6 +95,26 @@ const styles = StyleSheet.create({
   },
   backButton: { padding: 5 },
   headerTitle: { color: '#fff', fontSize: 20, fontWeight: 'bold' },
+  
+  // New Search Bar Styles
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E293B',
+    marginHorizontal: 20,
+    marginTop: 20,
+    paddingHorizontal: 15,
+    borderRadius: 12,
+    height: 50,
+  },
+  searchIcon: { marginRight: 10 },
+  searchInput: {
+    flex: 1,
+    color: '#fff',
+    fontSize: 16,
+  },
+  emptyText: { color: '#94a3b8', textAlign: 'center', marginTop: 40, fontSize: 16 },
+
   listContainer: { padding: 20 },
   userCard: {
     flexDirection: 'row',
