@@ -5,15 +5,19 @@ import ProfileScreen from '../screens/ProfileScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import ChatListScreen from '../screens/ChatListScreen';
 import ChatConversationScreen from '../screens/ChatConversationScreen';
+import OnboardingScreen from '../screens/OnBoardingScreen';
+import SplashScreen from '../screens/SplashScreen';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator 
-      initialRouteName="OrganizerProfile" 
+      initialRouteName="Splash" 
       screenOptions={{ headerShown: false }}
-    >
+    >           
+      <Stack.Screen name="Splash" component={SplashScreen}  />
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ headerShown: false }}  />
       <Stack.Screen name="OrganizerProfile" component={OrganizerProfileScreen}  />
       <Stack.Screen name="Profile" component={ProfileScreen}  />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
