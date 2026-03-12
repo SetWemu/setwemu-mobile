@@ -24,17 +24,26 @@ const AttendeesListScreen = ({ navigation }: any) => {
   );
 
   const renderItem = ({ item }: any) => (
-    <View style={styles.userRow}>
+    // PART 3 CHANGE: The outer View is now a TouchableOpacity so you can tap the whole row!
+    <TouchableOpacity 
+      style={styles.userRow}
+      activeOpacity={0.7}
+      onPress={() => console.log(`Maps to ${item.name}'s Profile`)} 
+    >
       <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
         <Text style={styles.userRole}>{item.role}</Text>
       </View>
       
-      <TouchableOpacity style={styles.messageBtn}>
+      {/* The separate tap target just for the chat button */}
+      <TouchableOpacity 
+        style={styles.messageBtn}
+        onPress={() => console.log(`Start chat with ${item.name}`)}
+      >
         <Icon name="chatbubble-ellipses-outline" size={20} color="#4CC1D4" />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -119,8 +128,8 @@ const styles = StyleSheet.create({
   userRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,          // Slightly more breathing room inside the row
-    marginBottom: 12,             // THIS adds the physical gap between each row!
+    paddingVertical: 16,          
+    marginBottom: 12,             
     borderBottomWidth: 1,         
     borderBottomColor: '#1E293B', 
   },
